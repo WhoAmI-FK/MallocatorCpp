@@ -7,6 +7,10 @@
 
 
 namespace nonstd {
+
+
+
+
 	template<typename T>
 	void resolver(T* pointer, T v) {
 		if (pointer != nullptr)
@@ -102,5 +106,10 @@ namespace nonstd {
 		}
 	private:
 
+	};
+	template<class _Alloc>
+	struct allocator_traits {
+		typedef _Alloc allocator_type;
+		// finish
 	};
 };
