@@ -8,6 +8,19 @@
 
 namespace nonstd {
 	template<typename T>
+	void resolver(T* pointer, T v) {
+		if (pointer != nullptr)
+			*pointer = v;
+		else throw std::runtime_error("passed nullptr");
+	}
+
+	template<typename T, typename ... Args>
+	void resolver(T* pointer, T first, Args&&... args) {
+		resolver(pointer, first);
+		pointer++;
+		resolver(pointer, args...);
+	}
+	template<typename T>
 	class allocator {
 	public:
 		typedef T value_type;
@@ -64,15 +77,28 @@ namespace nonstd {
 					free(i);
 			}
 		}
+		void destroy(pointer p) {
+			((T*)p)->~T();
+		}
 
+		template<class U>
+		void destroy(U* p) noexcept {
+			p->~U();
+		}
 		template<class... Args>
-		void construct(T*& p, Args&&... args) {
-			//T* mem = malloc(sizeof(args) * sizeof(T));
-			// need to be finished		
+		void construct(T* p, Args&&... args) {
+			resolver(p, args...);
 		}
 		size_type max_size() const noexcept {
 			// need to finish
 			//	return std::numeric_limits<T>::max();
+		}
+
+		pointer address(reference x) const {
+			return &x;
+		}
+		const_pointer address(const_reference x)const {
+			return &x;
 		}
 	private:
 
